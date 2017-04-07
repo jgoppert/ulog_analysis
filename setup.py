@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 import versioneer
 
@@ -12,5 +12,5 @@ setup(
     author='James Goppert',
     author_email='james.goppert@gmail.com',
     description='Analysis for px4 autopilot flight log data in ulog format.',
-    cmdclass=versioneer.get_cmdclass()
+    cmdclass=versioneer.get_cmdclass(),
 )

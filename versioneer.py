@@ -1,3 +1,4 @@
+
 # Version: 0.18
 
 """The Versioneer - like a rocketeer, but for versions.
@@ -276,7 +277,6 @@ https://creativecommons.org/publicdomain/zero/1.0/ .
 """
 
 from __future__ import print_function
-
 try:
     import configparser
 except ImportError:
@@ -348,7 +348,6 @@ def get_config_from_root(root):
         if parser.has_option("versioneer", name):
             return parser.get("versioneer", name)
         return None
-
     cfg = VersioneerConfig()
     cfg.VCS = VCS
     cfg.style = get(parser, "style") or ""
@@ -373,14 +372,12 @@ HANDLERS = {}
 
 def register_vcs_handler(vcs, method):  # decorator
     """Decorator to mark a method as the handler for a particular VCS."""
-
     def decorate(f):
         """Store f in HANDLERS[vcs][method]."""
         if vcs not in HANDLERS:
             HANDLERS[vcs] = {}
         HANDLERS[vcs][method] = f
         return f
-
     return decorate
 
 
@@ -1524,7 +1521,6 @@ def get_cmdclass():
             print(" date: %s" % vers.get("date"))
             if vers["error"]:
                 print(" error: %s" % vers["error"])
-
     cmds["version"] = cmd_version
 
     # we override "build_py" in both distutils and setuptools
@@ -1544,9 +1540,9 @@ def get_cmdclass():
 
     # we override different "build_py" commands for both environments
     if "setuptools" in sys.modules:
-        pass
+        from setuptools.command.build_py import build_py as _build_py
     else:
-        pass
+        from distutils.command.build_py import build_py as _build_py
 
     class cmd_build_py(_build_py):
         def run(self):
@@ -1561,10 +1557,10 @@ def get_cmdclass():
                                                   cfg.versionfile_build)
                 print("UPDATING %s" % target_versionfile)
                 write_to_version_file(target_versionfile, versions)
-
     cmds["build_py"] = cmd_build_py
 
     if "cx_Freeze" in sys.modules:  # cx_freeze enabled?
+        from cx_Freeze.dist import build_exe as _build_exe
         # nczeczulin reports that py2exe won't like the pep440-style string
         # as FILEVERSION, but it can be used for PRODUCTVERSION, e.g.
         # setup(console=[{
@@ -1592,7 +1588,6 @@ def get_cmdclass():
                              "PARENTDIR_PREFIX": cfg.parentdir_prefix,
                              "VERSIONFILE_SOURCE": cfg.versionfile_source,
                              })
-
         cmds["build_exe"] = cmd_build_exe
         del cmds["build_py"]
 
@@ -1622,14 +1617,13 @@ def get_cmdclass():
                              "PARENTDIR_PREFIX": cfg.parentdir_prefix,
                              "VERSIONFILE_SOURCE": cfg.versionfile_source,
                              })
-
         cmds["py2exe"] = cmd_py2exe
 
     # we override different "sdist" commands for both environments
     if "setuptools" in sys.modules:
-        pass
+        from setuptools.command.sdist import sdist as _sdist
     else:
-        pass
+        from distutils.command.sdist import sdist as _sdist
 
     class cmd_sdist(_sdist):
         def run(self):
@@ -1651,7 +1645,6 @@ def get_cmdclass():
             print("UPDATING %s" % target_versionfile)
             write_to_version_file(target_versionfile,
                                   self._versioneer_generated_versions)
-
     cmds["sdist"] = cmd_sdist
 
     return cmds
