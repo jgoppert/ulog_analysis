@@ -6,7 +6,7 @@ setup(
     name='ulog_analysis',
     version=versioneer.get_version(),
     packages=['ulog_analysis'],
-    requires=['pyulog', 'pandas'],
+    requires=['pyulog', 'pandas', 'beautifulsoup4'],
     url='github.com/jgoppert/ulog_analysis',
     license='BSD v3',
     author='James Goppert',
