@@ -1,0 +1,2 @@
+include versioneer.py
+include ulog_analysis/_version.py

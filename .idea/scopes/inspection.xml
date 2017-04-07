@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="inspection" pattern="(file[ulog_analysis]:ulog_analysis/*||file:setup.py)&amp;&amp;!file:ulog_analysis/_version.py" />
+</component>
