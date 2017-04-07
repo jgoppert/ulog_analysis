@@ -10,8 +10,13 @@ import urllib.request
 from bs4 import BeautifulSoup
 
 
-def get_log_data(log_data_file, log_dir):
+def get_log_data(log_dir):
     """Download log data from px4 webpage."""
+
+    # create directory
+    if not os.path.exists(log_dir):
+        os.mkdir(log_dir)
+
     # get log data
     page = urllib.request.urlopen("http://review.px4.io/browse")
     soup = BeautifulSoup(page.read(), 'html.parser')
@@ -34,7 +39,7 @@ def get_log_data(log_data_file, log_dir):
                 minutes=ts.tm_min,
                 seconds=ts.tm_sec).total_seconds()
         except Exception as exc:
-            print(exc)
+            print(uuid, exc)
             continue
 
         log_data[uuid] = {
@@ -51,13 +56,12 @@ def get_log_data(log_data_file, log_dir):
             'errors': int(entries[9].getText()),
         }
 
+    log_data_file = os.path.join(log_dir, 'log_data.json')
     with open(log_data_file, 'w') as fid:
         fid.write(json.dumps(log_data, indent=2, sort_keys=True))
     print('found ', len(log_data.keys()), ' logs')
 
     # download log files and save to disk
-    if not os.path.exists(log_dir):
-        os.mkdir(log_dir)
     for log in sorted(log_data.keys()):
         log_path = os.path.join('logs', '{:s}.ulg'.format(log))
         if os.path.exists(log_path):
@@ -71,4 +75,4 @@ def get_log_data(log_data_file, log_dir):
 
 
 if __name__ == "__main__":
-    get_log_data('log_data.json', 'logs')
+    get_log_data('logs')
